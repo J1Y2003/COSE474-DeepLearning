@@ -34,8 +34,6 @@ class nn_linear_layer:
         # parameter update
         self.W=self.W+dLdW
         self.b=self.b+dLdb
-        print("New W:", self.W)
-        print("New b:", self.b)
 
 class nn_activation_layer:
     
@@ -99,7 +97,11 @@ class nn_cross_entropy_layer:
     ######
     ## Q8
     def backprop(self,x,y):
-        dydx = -1 * (y / x)
+        B = x.shape[0]
+        I = x.shape[1]
+        y_one_hot = np.zeros((B, I))
+        y_one_hot[np.arange(B), y.flatten()] = 1  # One-hot encode y
+        dydx = x - y_one_hot
         return dydx #= dLdx as dLdy = 1
 
 # number of data points for each of (0,0), (0,1), (1,0) and (1,1)
@@ -113,7 +115,7 @@ num_test=40
 ## This part is not graded (there is no definitive answer).
 ## You can set this hyperparameters through experiments.
 lr=0.1
-num_gd_step=5
+num_gd_step=2000
 
 # dataset size
 batch_size=4*num_d
